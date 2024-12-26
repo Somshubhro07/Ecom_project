@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Order Grievance</h1>
+<p>Product Name: {{ order.product_name }}</p>
+<p>Price: ${{ order.price }}</p>
+<p>Merchant: {{ order.merchant_name }}</p>
+<p>Delivery Partner: {{ order.delivery_partner_name }}</p>
+<p>Delivered On: {{ order.delivery_date }}</p>
+
+<h2>Report an Issue</h2>
+<form id="grievance-form">
+    <label>
+        <input type="radio" name="reason" value="Delivery not made" required>
+        Delivery not made
+    </label><br>
+    <label>
+        <input type="radio" name="reason" value="Damaged product" required>
+        Damaged product
+    </label><br>
+    <label>
+        <input type="radio" name="reason" value="Other issue" required>
+        Other issue
+    </label><br>
+    <textarea name="details" placeholder="Provide additional details (optional)"></textarea><br>
+    <button type="submit">Submit</button>
+</form>
+
+        <div id="chat-container"></div>
+    <script>
+        document.getElementById("grievance-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const reason = formData.get("reason");
+    const details = formData.get("details") || "";
+
+    fetch("/initiate_grievance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            order_id: {{ order.id }},
+            reason: reason + (details ? `: ${details}` : ""),
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert("Grievance submitted successfully. Chat with support now.");
+                window.location.reload();
+            } else {
+                alert("Failed to submit grievance.");
+            }
+        })
+        .catch((error) => console.error("Error:", error));
+});
+
+    </script>
+
+</body>
+</html>

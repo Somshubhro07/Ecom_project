@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Your Orders</title>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: antiquewhite;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 10%; /* To account for the fixed header */
+            margin-left: 10%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .orders-table th, .orders-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .orders-table th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .orders-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .orders-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .no-orders {
+            text-align: center;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <span class="logo"><a href="/">Raju Da Porotha</a></span>
+        <div class="categories-dropdown">
+            <span>Categories</span>
+            <div class="dropdown-content">
+                {% for category in categories %}
+                    <a href="/category/{{ category.id }}">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="user-actions">
+            <a href='/add_address' class="cart">Add Address</a>
+        </div>
+        <div class="deliver-to">
+            Deliver to: 
+            {% if selected_city %}
+                <strong>{{ selected_city }}</strong>
+            {% else %}
+                <strong>Select Address</strong>
+            {% endif %}
+        </div>
+        <form action="/" method="get" class="search-bar">
+            <input type="text" id="search-input" name="query" placeholder="Search for products..." autocomplete="off" value="{{ search_term }}">
+            <ul id="search-suggestions" class="suggestions-dropdown"></ul>
+            <button type="submit">Search</button>
+        </form>
+        <div class="user-actions">
+            {% if first_name %}
+            <span>Welcome,</span>
+                <strong> {{ first_name }}</strong>
+                <a href="/logout">Logout</a>
+                <!-- <a href="/login">Login</a>
+                <a href="/signup">Sign Up</a> -->
+                <a href="/your_orders">Your Orders</a>
+                <a href="/cart" class="cart">Cart</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="container">
+        <h1>Your Orders</h1>
+        <div class="orders">
+            {% if orders %}
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>City</th>
+                    <th>Shipping Address</th>
+                    <th>Status</th>
+                    <th>Delivery Partner</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ order.product_name }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td>{{ order.price }}</td>
+                        <td>{{ order.city }}</td>
+                        <td>{{ order.shipping_address }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>
+                            {% if order.status == 'Shipped' %}
+                                {{ order.delivery_partner_name or "Not Assigned" }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                            {% if order.status == 'Delivered' %}
+                            <span class="hover-chat" title="Any issue? Chat with us!" 
+                                onclick="window.location.href='/order_grievance/{{ order.id }}'">
+                                Delivered
+                            </span>
+                        {% else %}
+                            {{ order.status }}
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders found.</p>
+    {% endif %}
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search-input");
+    const suggestionsContainer = document.getElementById("search-suggestions");
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+
+        if (query.length === 0) {
+            suggestionsContainer.innerHTML = "";
+            suggestionsContainer.style.display = "none";
+            return;
+        }
+
+        // Fetch search suggestions from the server
+        fetch(`/search_suggestions?query=${encodeURIComponent(query)}`)
+            .then((response) => response.json())
+            .then((data) => {
+                suggestionsContainer.innerHTML = "";
+                suggestionsContainer.style.display = "block";
+
+                if (data.length === 0) {
+                    const noResult = document.createElement("li");
+                    noResult.textContent = "No results found";
+                    suggestionsContainer.appendChild(noResult);
+                    return;
+                }
+
+                // Populate suggestions
+                data.forEach((suggestion) => {
+                    const suggestionItem = document.createElement("li");
+                    suggestionItem.textContent = `${suggestion.product_name} ...in category ${suggestion.category_name}`;
+
+                    // Click on suggestion redirects to product page
+                    suggestionItem.addEventListener("click", () => {
+                        searchInput.value = suggestion.product_name; // Show the selected product name in the search box
+                        document.querySelector("form").submit(); // Automatically submit the form
+                    });
+
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching suggestions:", error);
+            });
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener("click", (event) => {
+        if (!searchInput.contains(event.target)) {
+            suggestionsContainer.innerHTML = "";
+            suggestionsContainer.style.display = "none";
+        }
+    });
+});
+    </script>
+</body>
+</html>

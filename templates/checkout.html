@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: antiquewhite;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #2e8b57; /* Sea Green */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        header nav ul li {
+            display: inline;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #98fb98; /* Pale Green */
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        section h2 {
+            color: #2e8b57;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #98fb98;
+            padding-bottom: 5px;
+        }
+
+        form button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #228b22; /* Forest Green */
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #2e8b57;
+            color: white;
+        }
+
+        table td a {
+            color: #2e8b57;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        table td a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Summary</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item['product_name'] }}</td>
+                <td>{{ item['price'] }}</td>
+                <td>{{ item['quantity'] }}</td>
+                <td>{{ item['price'] * item['quantity'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form action="/process_payment" method="post">
+        <button type="submit">Proceed to Pay</button>
+    </form>
+</body>
+</html>

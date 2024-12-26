@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Partner Signup</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Delivery Partner Signup</h2>
+        <form action="/delivery_signup" method="POST" enctype="multipart/form-data">
+            <input type="text" name="name" placeholder="Name" required>
+            <input type="text" name="state" placeholder="State" required>
+            <input type="text" name="city" placeholder="City" required>
+            <input type="number" name="age" placeholder="Age" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="phone" placeholder="Phone Number" required>
+            <input type="file" name="license" accept="image/*" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button class="clkbn" type="submit">Sign Up</button>
+        </form>
+    </div>
+</body>
+</html>

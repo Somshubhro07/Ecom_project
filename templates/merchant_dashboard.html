@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Merchant Dashboard</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: antiquewhite;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #2e8b57; /* Sea Green */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        header nav ul li {
+            display: inline;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #98fb98; /* Pale Green */
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        section h2 {
+            color: #2e8b57;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #98fb98;
+            padding-bottom: 5px;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .stat {
+            flex: 1;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat h3 {
+            color: #2e8b57;
+            margin-bottom: 10px;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        form label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        form input, form textarea, form button {
+            border: 2px solid #bbb;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        form input:focus, form textarea:focus {
+            border-color: #2e8b57;
+            outline: none;
+        }
+
+        form button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #228b22; /* Forest Green */
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #2e8b57;
+            color: white;
+        }
+
+        table td a {
+            color: #2e8b57;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        table td a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chart Section */
+        .chart-container {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container p {
+            color: #555;
+        }
+        a.logout-btn {
+            color: white;                  
+            background-color: #2d6a4f;      
+            padding: 8px 12px;              
+            text-decoration: none;         
+            border-radius: 5px;             
+            font-weight: bold;              
+            transition: background-color 0.3s ease, color 0.3s ease; 
+        }
+
+        a.logout-btn:hover {
+            background-color: #40916c;     
+            color: #d8f3dc
+        }
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            font-weight: 500;
+            color: #444; /* Dark gray text */
+            background-color: #ffffff; /* White background */
+            border: 2px solid #ddd; /* Subtle border */
+            border-radius: 8px; /* Smooth rounded corners */
+            appearance: none; /* Removes the default dropdown arrow styling */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%23666'/%3E%3C/svg%3E"); /* Custom arrow */
+            background-repeat: no-repeat;
+            background-position: right 12px center; /* Arrow on the right */
+            background-size: 12px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            select:hover {
+            border-color: #bbb; /* Change border on hover */
+            }
+
+            select:focus {
+            border-color: #007bff; /* Blue border */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus glow */
+            outline: none; /* Remove default outline */
+            }
+
+            option {
+            font-size: 16px;
+            padding: 10px; /* Spacing for dropdown options */
+            background-color: #fff;
+            color: #444;
+            }
+
+            option:hover {
+            background-color: #f0f0f0; /* Slight background change on hover */
+            }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Merchant Dashboard</h1>
+        <h2>Welcome, {{ merchant_name }}</h2>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </header>
+    <main>
+        <div class="container">
+        <!-- Top Stats Section -->
+            <section class="stats">
+                <div class="stat">
+                    <h3>Total Sales</h3>
+                    <p>{{ total_sales }}</p>
+                </div>
+                <div class="stat">
+                    <h3>Pending Orders</h3>
+                    <p>{{ pending_orders }}</p>
+                </div>
+                <div class="stat">
+                    <h3>Products Listed</h3>
+                    <p>{{ total_products }}</p>
+                </div>
+            </section>
+
+            <!-- Active Orders Section -->
+
+            <section>
+            <!-- Add Product Section -->
+                <div class="add-product">
+                    <h3>Add New Product</h3>
+                    <form action="/add_product" method="POST" enctype="multipart/form-data">
+                        <label for="name">Product Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" required></textarea>
+                    
+                        <label for="price">Price:</label>
+                        <input type="number" id="price" name="price" step="0.01" required>
+                    
+                        <label for="stock">Stock:</label>
+                        <input type="number" id="stock" name="stock" required>
+                    
+                        <label for="discount">Discount (%):</label>
+                        <input type="number" id="discount" name="discount" step="0.01">
+                    
+                        <label for="category_id">Category:</label>
+                        <select id="category_id" name="category_id" required>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    
+                        <label for="subcategory_id">Subcategory:</label>
+                        <select id="subcategory_id" name="subcategory_id" required>
+                            {% for subcategory in subcategories %}
+                                <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                            {% endfor %}
+                        </select>
+                    
+                        <label for="images">Upload Images (Max 7):</label>
+                        <input type="file" id="images" name="images" multiple accept="image/*" required>
+
+                        <h3>Detailed Description</h3>
+                        <div id="dynamic-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Detail</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                    <tr>
+                                        <td><input type="text" name="feature[]" placeholder="Feature"></td>
+                                        <td><input type="text" name="detail[]" placeholder="Detail"></td>
+                                        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button type="button" id="add-row">Add Row</button>
+                        </div>
+                    
+                        <button type="submit">Add Product</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Product Listings -->
+            <section id="product-list">
+                <h3>Your Products</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Category</th>
+                                <th>Subcategory</th>
+                                <th>Approval Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr>
+                                <td>{{ product.name }}</td>
+                                <td>{{ product.price }}</td>
+                                <td>{{ product.stock }}</td>
+                                <td>{{ product.category_name if product.category_name else 'N/A' }}</td>
+                                <td>{{ product.subcategory_name if product.subcategory_name else 'N/A' }}</td>
+                                <td>{{ 'Approved' if product.approve == 1 else 'Pending' }}</td>
+                                <td>
+                                    <!-- Actions for managing the product (approve, edit, etc.) -->
+                                    <button type="submit" class="edit-btn"  data-product-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock }}" data-discount="{{ product.discount }}" data-category="{{ product.category_id }}" data-subcategory="{{ product.subcategory_id }}">Edit</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </section>
+            <section>
+                <section id="products">
+                    <h2>Your Listed Products</h2>
+                    {% if products %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>{{ product['id'] }}</td>
+                                        <td>{{ product['name'] }}</td>
+                                        <td>{{ product['price'] }}</td>
+                                        <td>{{ product['stock'] }}</td>
+                                        <td>
+                                            {% if product['approve'] == 1 %}
+                                                Approved
+                                            {% elif product['approve'] == -1 %}
+                                                Rejected
+                                            {% else %}
+                                                Pending
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p>No products listed yet.</p>
+                    {% endif %}
+                </section>
+            </section>
+            <section>
+                <div class="section">
+                    <h2>Pending Orders</h2>
+{% if pending_orders %}
+<table>
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Purchaser</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in pending_orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.product_name }}</td>
+                <td>{{ order.purchaser_name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.price }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    <form action="/merchant_dashboard" method="POST">
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <input type="hidden" name="new_status" value="shipping">
+                        <button type="submit">Mark as Shipping</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+        </table>
+        {% else %}
+        <p>No pending orders.</p>
+        {% endif %}
+
+            <h2>Shipping Orders</h2>
+            {% if shipping_orders %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Purchaser</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+    <tbody>
+        {% for order in shipping_orders %}
+        <tr>
+            <td>{{ order['id'] }}</td>
+            <td>{{ order['product_name'] }}</td>
+            <td>{{ order['quantity'] }}</td>
+            <td>${{ order['price'] }}</td>
+            <td>{{ order['purchaser_name'] }}</td>
+            <td>{{ order['status'] }}</td>
+            <td>
+                <form action="/merchant_dashboard" method="POST">
+                    <input type="hidden" name="order_id" value="{{ order['id'] }}">
+                    <button type="submit" name="new_status" value="Shipped">Mark as Shipped</button>
+                </form>
+            </td>
+            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                    {% else %}
+                <p>No shipping orders.</p>
+                {% endif %}
+
+                <h2>Shipped Orders</h2>
+                {% if shipped_orders %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Purchaser</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in shipped_orders %}
+                        <tr>
+                            <td>{{ order['id'] }}</td>
+                            <td>{{ order['product_name'] }}</td>
+                            <td>{{ order['quantity'] }}</td>
+                            <td>₹{{ order['price'] }}</td>
+                            <td>{{ order['purchaser_name'] }}</td>
+                            <td>{{ order['status'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No shipped orders.</p>
+                {% endif %}
+                
+                </section>
+                <section>
+                <div class="section">
+                    <h2>Pending Product Approvals</h2>
+                    {% if pending_approval %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Description</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in pending_approval %}
+                                <tr>
+                                    <td>{{ product['name'] }}</td>
+                                    <td>{{ product['description'] }}</td>
+                                    <td>₹{{ product['price'] }}</td>
+                                    <td>{{ product['stock'] }}</td>
+                                    <td>Pending Approval</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                <p>No products pending approval.</p>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+        <section>
+            <div class="section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Stock</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>
+                            {% if product.stock < 2 %}
+                            <input
+                                type="number"
+                                min="1"
+                                placeholder="Add stock"
+                                id="stock-input-{{ product.id }}"
+                            />
+                            <button onclick="updateStock({{ product.id }})">Add Stock</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </section>
+        <section>
+            <div id="edit-product-form" style="display: none;">
+                <h3>Edit Product</h3>
+                <form method="POST">
+                    <input type="hidden" name="product_id" id="product_id">
+                    <label for="name">Product Name:</label>
+                    <input type="text" id="name" name="name" required><br>
+        
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" required></textarea><br>
+        
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" required><br>
+        
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" name="stock" required><br>
+        
+                    <label for="discount">Discount:</label>
+                    <input type="number" id="discount" name="discount"><br>
+        
+                    <label for="category">Category:</label>
+                    <select name="category" id="category" required>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select><br>
+        
+                    <label for="subcategory">Subcategory:</label>
+                    <select name="subcategory" id="subcategory" required>
+                        {% for subcategory in subcategories %}
+                            <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                        {% endfor %}
+                    </select><br>
+        
+                    <button type="submit">Update Product</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.getElementById("add-row").addEventListener("click", () => {
+        const tbody = document.getElementById("table-body");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><input type="text" name="feature[]" placeholder="Feature"></td>
+            <td><input type="text" name="detail[]" placeholder="Detail"></td>
+            <td><button type="button" onclick="removeRow(this)">Remove</button></td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    function removeRow(button) {
+        button.closest("tr").remove();
+    }
+          document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.getAttribute('data-product-id');
+                const productName = this.getAttribute('data-name');
+                const productPrice = this.getAttribute('data-price');
+                const productStock = this.getAttribute('data-stock');
+                const productDiscount = this.getAttribute('data-discount');
+                const productCategory = this.getAttribute('data-category');
+                const productSubcategory = this.getAttribute('data-subcategory');
+
+                document.getElementById('product_id').value = productId;
+                document.getElementById('name').value = productName;
+                document.getElementById('price').value = productPrice;
+                document.getElementById('stock').value = productStock;
+                document.getElementById('discount').value = productDiscount;
+                document.getElementById('category').value = productCategory;
+                document.getElementById('subcategory').value = productSubcategory;
+
+                // Show the form
+                document.getElementById('edit-product-form').style.display = 'block';
+            });
+        });
+        function cancelOrder(orderId) {
+    fetch(`/cancel_order/${orderId}`, { method: "POST" })
+        .then((response) => {
+            if (response.ok) {
+                alert("Order has been cancelled.");
+                window.location.reload();
+            } else {
+                alert("Failed to cancel the order.");
+            }
+        })
+        .catch((error) => console.error("Error:", error));
+}
+function updateStock(productId) {
+        const stockInput = document.getElementById(`stock-input-${productId}`);
+        const additionalStock = parseInt(stockInput.value);
+
+        if (isNaN(additionalStock) || additionalStock < 1) {
+            alert("Please enter a valid stock value.");
+            return;
+        }
+
+        fetch("/update_stock", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                additional_stock: additionalStock,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    alert("Stock updated successfully!");
+                    location.reload();
+                } else {
+                    alert(data.message || "Could not update stock.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error updating stock:", error);
+                alert("Something went wrong. Please try again.");
+            });
+    }
+    </script>
+</body>
+</html>

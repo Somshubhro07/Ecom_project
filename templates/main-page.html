@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <span class="logo"><a href="/">Raju Da Porotha</a></span>
+        <div class="categories-dropdown">
+            <span>Categories</span>
+            <div class="dropdown-content">
+                {% for category in categories %}
+                    <a href="/category/{{ category.id }}">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <span class="delivery-to">Deliver to: <b>{{ delivery_city }}</b></span>
+        <form action="/" method="get" class="search-bar">
+            <input type="text" id="search-input" name="query" placeholder="Search for products..." autocomplete="off" value="{{ search_term }}">
+            <ul id="search-suggestions" class="suggestions-dropdown"></ul>
+            <button type="submit">Search</button>
+        </form>
+        
+        <div class="user-actions">
+            <a href='/add_address' class="cart">Add Address</a>
+            {% if session.get('user_id') %}
+            Welcome,
+            <strong> {{ session['user_name'] }}</strong>
+            <a href="/logout">Logout</a>
+            <a href="/cart">Cart</a>
+            <a href="/your_orders">Your Orders</a>
+            {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+    </header>
+    <main>
+        <div id="products" class="product-grid">
+            {% for product in products %}
+            <div class="product-card" onclick="window.location.href='/product{{ product.id }}'" onmouseover="startSlide({{ product.id }})" onmouseout="stopSlide({{ product.id }})">
+                <div class="image-container" id="image-container-{{ product.id }}">
+                    {% set images = product.image.split(',') %}
+                    {% for image in images %}
+                    <img src="{{ image }}" alt="{{ product.name }}" class="product-image" style="display: {% if loop.first %}block{% else %}none{% endif %}; width: 200px;" >
+                    {% endfor %}
+                </div>
+                <h3>{{ product['name'] }}</h3>
+                <p>{{ product['description'] }}</p>
+                <p>Price: ₹{{ product['price'] }} - {{ product['discount'] }}% off</p>
+                <button class="add-to-cart" data-product-id="{{ product.id }}">Add to Cart</button>
+
+        
+                <!-- Stock Information -->
+                <p class="product-stock">
+                    {% if product.stock > 2 %}
+                        In stock: {{ product.stock }}
+                    {% elif product.stock == 2 %}
+                        Hurry, only 2 left!
+                    {% elif product.stock == 1 %}
+                        Hurry, only 1 left!
+                    {% else %}
+                        Out of stock
+                    {% endif %}
+                </p>
+        
+                <!-- Add to Cart Button -->
+                {% if product.stock > 0 %}
+                
+                {% else %}
+                <button class="out-of-stock-btn" disabled>Out of Stock</button>
+                {% endif %}
+            </div>
+            {% else %}
+            <p>No products available at the moment.</p>
+            {% endfor %}
+        </div>
+    </main>
+
+    <script>
+        let slideIntervals = {};
+
+function startSlide(productId) {
+    const container = document.getElementById(`image-container-${productId}`);
+    const images = container.querySelectorAll(".product-image");
+    let currentIndex = 0;
+
+    slideIntervals[productId] = setInterval(() => {
+        images[currentIndex].style.display = "none"; // Hide the current image
+        currentIndex = (currentIndex + 1) % images.length; // Move to the next image
+        images[currentIndex].style.display = "block"; // Show the next image
+    }, 1000); // Change image every second
+}
+
+function stopSlide(productId) {
+    clearInterval(slideIntervals[productId]);
+    const container = document.getElementById(`image-container-${productId}`);
+    const images = container.querySelectorAll(".product-image");
+
+    // Reset to the first image
+    images.forEach((img, index) => {
+        img.style.display = index === 0 ? "block" : "none";
+    });
+}
+        document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById("search-input");
+    const suggestionsContainer = document.getElementById("search-suggestions");
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim();
+
+        if (query.length === 0) {
+            suggestionsContainer.innerHTML = "";
+            suggestionsContainer.style.display = "none";
+            return;
+        }
+
+        // Fetch search suggestions from the server
+        fetch(`/search_suggestions?query=${encodeURIComponent(query)}`)
+            .then((response) => response.json())
+            .then((data) => {
+                suggestionsContainer.innerHTML = "";
+                suggestionsContainer.style.display = "block";
+
+                if (data.length === 0) {
+                    const noResult = document.createElement("li");
+                    noResult.textContent = "No results found";
+                    suggestionsContainer.appendChild(noResult);
+                    return;
+                }
+
+                // Populate suggestions
+                data.forEach((suggestion) => {
+                    const suggestionItem = document.createElement("li");
+                    suggestionItem.textContent = `${suggestion.product_name} ...in category ${suggestion.category_name}`;
+
+                    // Click on suggestion redirects to product page
+                    suggestionItem.addEventListener("click", () => {
+                        searchInput.value = suggestion.product_name; // Show the selected product name in the search box
+                        document.querySelector("form").submit(); // Automatically submit the form
+                    });
+
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching suggestions:", error);
+            });
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener("click", (event) => {
+        if (!searchInput.contains(event.target)) {
+            suggestionsContainer.innerHTML = "";
+            suggestionsContainer.style.display = "none";
+        }
+    });
+});
+
+
+
+// Function to display custom messages
+function showMessage(message, type) {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = message;
+
+    // Append to the body and auto-remove after 3 seconds
+    document.body.appendChild(messageDiv);
+
+    // Auto-remove the message after 3 seconds
+    setTimeout(() => {
+        if (messageDiv.parentNode) {
+            document.body.removeChild(messageDiv);
+        }
+    }, 3000);
+}
+
+
+    </script>
+
+</body>
+</html>

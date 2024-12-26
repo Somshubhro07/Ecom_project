@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: antiquewhite;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #2e8b57; /* Sea Green */
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        header nav ul li {
+            display: inline;
+        }
+
+        header nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #98fb98; /* Pale Green */
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        section h2 {
+            color: #2e8b57;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #98fb98;
+            padding-bottom: 5px;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .stat {
+            flex: 1;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat h3 {
+            color: #2e8b57;
+            margin-bottom: 10px;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        form label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        form input, form textarea, form button {
+            border: 2px solid #bbb;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        form input:focus, form textarea:focus {
+            border-color: #2e8b57;
+            outline: none;
+        }
+
+        form button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #228b22; /* Forest Green */
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #2e8b57;
+            color: white;
+        }
+
+        table td a {
+            color: #2e8b57;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        table td a:hover {
+            text-decoration: underline;
+        }
+
+        /* Chart Section */
+        .chart-container {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container p {
+            color: #555;
+        }
+        a.logout-btn {
+            color: white;                  
+            background-color: #2d6a4f;      
+            padding: 8px 12px;              
+            text-decoration: none;         
+            border-radius: 5px;             
+            font-weight: bold;              
+            transition: background-color 0.3s ease, color 0.3s ease; 
+        }
+
+        a.logout-btn:hover {
+            background-color: #40916c;     
+            color: #d8f3dc
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Welcome, Admin {{ admin_name }}</h2>
+        <a class="logout-btn"href="/logout">Logout</a>
+    </header>
+    <section>
+        <h2>Pending Product Approvals</h2>
+        {% if pending_approval %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Merchant</th>
+                        <th>Images</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in pending_approval %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description }}</td>
+                            <td>{{ product.price }}</td>
+                            <td>{{ product.stock }}</td>
+                            <td>{{ product.category_name if product.category_name else 'N/A' }}</td>
+                            <td>{{ product.subcategory_name if product.subcategory_name else 'N/A' }}</td>
+                            <td>
+                                {% if product.image %}
+                                    <img src="{{ product.image }}" alt="Product Image" width="100">
+                                {% else %}
+                                    No image available
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="/approve_product/{{ product['id'] }}" method="POST" style="display:inline;">
+                                    <button type="submit">Approve</button>
+                                </form>
+                                <form action="/reject_product/{{ product['id'] }}" method="POST" style="display:inline;">
+                                    <button type="submit">Reject</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No products pending approval.</p>
+        {% endif %}
+    </section>
+    <section>
+        <h2>Pending Delivery Partner Approvals</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Approval Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for partner in delivery_partners %}
+                <tr>
+                    <td>{{ partner['id'] }}</td>
+                    <td>{{ partner['name'] }}</td>
+                    <td>{{ partner['email'] }}</td>
+                    <td>{{ partner['state'] }}</td>
+                    <td>{{ partner['city'] }}</td>
+                    <td>
+                        {% if partner['approved'] == 0 %}
+                        Pending
+                        {% elif partner['approved'] == 1 %}
+                        Approved
+                        {% else %}
+                        Denied
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for delivery_partner in delivery_partners %}
+    <!-- Show the Approve/Deny buttons only if the delivery partner's status is 'pending' (approved == 0) -->
+    {% if delivery_partner['approved'] == 0 %}
+        <form action="{{ url_for('approve_delivery_partner', delivery_partner_id=delivery_partner['id']) }}" method="POST">
+            <button type="submit">Approve</button>
+        </form>
+
+        <form action="{{ url_for('deny_delivery_partner', delivery_partner_id=delivery_partner['id']) }}" method="POST">
+            <button type="submit">Deny</button>
+        </form>
+    {% else %}
+        <!-- Show the current status if already approved or denied -->
+        
+    {% endif %}
+{% endfor %}
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

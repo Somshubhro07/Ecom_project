@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <script src="/static/cart.js" defer></script>
+    <style>
+        body {
+    font-family:  Helvetica, sans-serif, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: antiquewhite;
+    }
+
+    h1 {
+        font-size: 2rem;
+        text-align: center;
+        margin-top: 20px;
+        color: #2c3e50;
+    }
+
+    table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    table thead {
+        background-color: #3498db;
+        color: #fff;
+    }
+
+    table th, table td {
+        text-align: left;
+        padding: 15px;
+        border: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .price, .total {
+        font-size: 1.2rem;
+        color: #16a085;
+        font-weight: bold;
+    }
+
+    .quantity-input {
+        width: 50px;
+        padding: 5px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .remove-item {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .remove-item:hover {
+        background-color: #c0392b;
+    }
+
+    #subtotal {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    #clear-cart {
+        display: block;
+        width: 150px;
+        margin: 20px auto;
+        padding: 10px 15px;
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #clear-cart:hover {
+        background-color: #c0392b;
+    }
+
+    button:focus, input:focus {
+        outline: none;
+        box-shadow: 0 0 3px #3498db;
+    }
+    header{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+
+    }
+
+    header .logo{
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+        flex: 1;
+    }
+    header .logo a{
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #2c3e50;
+        transition: color 0.3s;
+    }
+    header .logo a:hover {
+        color: #3498db;
+    }
+    header .deliver-to {
+        font-size: 0.9rem;
+        color: #555;
+        flex: 1;
+        text-align: center;
+    }
+    header .search-bar{
+        flex: 2;
+        display: flex;
+        align-items: center;
+    }
+    header .search-bar input{
+        flex: 1;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    header .search-bar button{
+        margin-left: 5px;
+        padding: 5px 15px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    header .search-bar button:hover{
+        background-color: #2980b9;
+    }
+    header .user-actions {
+        flex: 1;
+        text-align: right;
+        font-size: 0.9rem;
+    }
+    header .user-actions a {
+        margin: 0 10px;
+        text-decoration: wavy;
+        color: #2c3e50;
+        
+    }
+    header .user-actions a:hover{
+        color: #3498db;
+    }
+    header .cart{
+        font-weight: bold;
+    }
+    .message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    z-index: 1000;
+    opacity: 0.9;
+    animation: fadeOut 3s forwards;
+}
+
+.message.success {
+    background-color: #28a745;
+}
+
+.message.error {
+    background-color: #dc3545;
+}
+
+/* Fade-out animation */
+@keyframes fadeOut {
+    0% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+.checkout-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.checkout-btn:hover {
+    background-color: #2980b9;
+}
+
+.cart-summary {
+    width: 25%;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.cart-summary h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.cart-summary p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+    </style>
+</head>
+<header>
+    <div class="logo">
+        <a href="/">Raju da porotha</a>
+    </div>
+    <div class="deliver-to">
+        Deliver to: 
+        {% if selected_city %}
+            <strong>{{ selected_city }}</strong>
+        {% else %}
+            <span>Select Address</span>
+        {% endif %}
+    </div>
+    <div class="user-actions">
+        {% if first_name %}
+        Welcome,
+            <strong> {{ first_name }}</strong>
+            <a href="/logout">Logout</a>
+        {% endif %}
+        <a href="/your_orders">Your Orders</a>
+    </div>
+</header>
+<body>
+    <h1>Your Cart</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td class="price">₹{{ item.price }}</td>
+                <td><input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" data-product-id="{{ item.product_id }}" /></td>
+                <td class="total">₹{{ item.total }}</td>
+                <td>
+                    <button
+                        class="remove-item"
+                        data-cart-id="{{ item.cart_id }}"
+                    >Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button id="clear-cart">Clear Cart</button>
+
+    <aside class="cart-summary">
+        <h2>Subtotal: ₹<span id="subtotal">0</span></h2>
+        <button id="checkout-btn" class="checkout-btn">Checkout</button>
+    </aside>
+</body>
+</html>

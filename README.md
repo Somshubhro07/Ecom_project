@@ -133,6 +133,6 @@ This project is licensed under the MIT License. See `LICENSE.md` for details.
 
 ### 📬 Contact
 For any inquiries or feedback, feel free to reach out:  
-- **Email**: support@ecommerceplatform.com  
-- **LinkedIn**: [Your Name](https://www.linkedin.com/in/yourname)  
-- **GitHub**: [@yourusername](https://github.com/yourusername)
+- **Email**: guha.somshubhro07@gmail.com 
+- **LinkedIn**: [Somshubhro Linkein]([https://www.linkedin.com/in/yourname](https://www.linkedin.com/in/somshubhro-guha-46b892272/))  
+- **GitHub**: [@Somshubhro07](https://github.com/Somshubhro07/)
